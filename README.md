@@ -6,11 +6,11 @@
 
 ### 👥 Integrantes del Equipo
 
-| # | Integrante |
-| :-: | :--- |
-| **01** | ![GitHub](https://img.shields.io/badge/--181717?style=flat-square&logo=github) **Cristian Uriel Sánchez Sánchez** |
-| **02** | ![GitHub](https://img.shields.io/badge/--181717?style=flat-square&logo=github) **Alessandra Anelisse Rivera Manzanero** |
-| **03** | ![GitHub](https://img.shields.io/badge/--181717?style=flat-square&logo=github) **Mia Valentina Reza Islas** |
+| Foto | Integrante |
+| :---: | :--- |
+| <img src="Fotos/CristianUrielSanchezSanchez.jpeg" width="80" height="80" style="border-radius: 50%; object-fit: cover;" alt="Foto Cristian"> | **Cristian Uriel Sánchez Sánchez** |
+| <img src="Fotos/AlessandraAnelisseRiveraManzanero.jpeg" width="80" height="80" style="border-radius: 50%; object-fit: cover;" alt="Foto Alessandra"> | **Alessandra Anelisse Rivera Manzanero** |
+| <img src="Fotos/MiaValentinaRezaIslas.jpeg" width="80" height="80" style="border-radius: 50%; object-fit: cover;" alt="Foto Mia"> | **Mia Valentina Reza Islas** |
 
 ---
 
