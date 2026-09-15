@@ -7,6 +7,7 @@ public class Pedido {
     private float impuestos;
     private float total;
     private String estado;
+    private float descuento;
 
 
     public String getCliente() {
@@ -55,5 +56,28 @@ public class Pedido {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public float getDescuento() {return descuento; }
+
+    public void setDescuento(float descuento) { this.descuento = descuento; }
+
+    @Override
+    public String toString() {
+        int cantidadProductos;
+
+        if (productos != null) {
+            cantidadProductos = productos.size();
+        } else {
+            cantidadProductos = 0;
+        }
+        return "\nPedido:" + "\n" +
+                "Cliente: " + cliente +
+                ", Productos: " + cantidadProductos +
+                ", Subtotal: $" + subtotal +
+                ", Descuento: $" + descuento +
+                ", Impuestos: $" + impuestos +
+                ", Total: $" + total +
+                ", Estado: " + estado;
     }
 }

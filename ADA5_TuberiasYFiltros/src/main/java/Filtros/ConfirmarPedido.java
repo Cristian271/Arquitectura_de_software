@@ -5,6 +5,7 @@ import Main.Pedido;
 public class ConfirmarPedido implements Filtro{
     @Override
     public Pedido procesar(Pedido pedido) {
-        return null;
+        pedido.setEstado("PROCESADO");
+        return pedido;
     }
 }
