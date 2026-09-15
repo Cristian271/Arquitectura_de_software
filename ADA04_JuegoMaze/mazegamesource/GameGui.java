@@ -147,6 +147,8 @@ public class GameGui extends JFrame implements ActionListener
             if(returnVal == JFileChooser.APPROVE_OPTION) 
             {
                 fl.loadFile(chooser.getSelectedFile().getName());//load the file we need
+                //fl.loadFile(chooser.getSelectedFile().getAbsolutePath());//load the file we need
+
                 theArc.setExit(fl.ExitXCord(),fl.ExitYCord());
                 loadMatrixGui("newLoad"); 
             }
