@@ -15,8 +15,6 @@ public class Main {
         Pedido pedido = new Pedido();
         System.out.println("Ingrese el nombre del cliente: ");
         cliente = scanner.nextLine();
-        /*La tarea pide que puedan haber pedidos sin productos para probar
-         validarlo en el filtro de ValidarDatos */
         while(true){
             String nombreProducto;
             int cantidad;
@@ -81,9 +79,6 @@ public class Main {
             scanner.nextLine();
             if (opcion == 1) {
                 Pedido pedido = creacionPedido(scanner);
-                /* Aqui se procesa el pedido en el orden declarado arriba (de arriba a abajo)
-                 Ojo <- No pueden crear un metodo en los filtros que no se llame procesar, en caso de que lo hagan
-                 deberá ser llamado desde el metodo procesar para que funcione el for correctamente :) */ //<- Borrar este comentario luego
                 try {
                     System.out.println("\nINICIO DEL FLUJO ");
 
@@ -108,22 +103,4 @@ public class Main {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
-
