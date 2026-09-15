@@ -7,11 +7,11 @@ public class ValidarDatos implements Filtro {
     public Pedido procesar(Pedido pedido) {
 
         if (pedido.getCliente() == null || pedido.getCliente().trim().isEmpty()) {
-            throw new IllegalArgumentException("Error: El pedido no tiene cliente");
+            throw new IllegalArgumentException(" El pedido no tiene cliente");
         }
 
         if (pedido.getProductos() == null || pedido.getProductos().isEmpty()) {
-            throw new IllegalArgumentException("Error: El pedido no contiene productos");
+            throw new IllegalArgumentException(" El pedido no contiene productos");
         }
 
         return pedido;

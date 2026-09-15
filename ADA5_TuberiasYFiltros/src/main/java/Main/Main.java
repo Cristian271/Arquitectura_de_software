@@ -19,8 +19,7 @@ public class Main {
             String nombreProducto;
             int cantidad;
             int existencia;
-            int porcentaje;
-            float descuento;
+            float descuento = 0;
             float precio;
             System.out.println("Ingrese el nombre del producto o presione enter si no sea ingresar productos:");
             nombreProducto = scanner.nextLine();
@@ -34,9 +33,6 @@ public class Main {
                 cantidad = scanner.nextInt();
                 System.out.println("Ingrese la cantidad de unidades disponibles");
                 existencia = scanner.nextInt();
-                System.out.println("Ingrese el porcentaje de descuento");
-                porcentaje = scanner.nextInt();
-                descuento = (float) porcentaje /100;
                 scanner.nextLine();
                 Producto producto = new Producto(nombreProducto, cantidad, existencia, descuento, precio);
                 productos.add(producto);
@@ -61,6 +57,7 @@ public class Main {
                 new ValidarDatos(),
                 new ComprobarDisponibilidad(),
                 new CalcularSubtotal(),
+                new VerificarFraude(),
                 new AplicarDescuento(),
                 new CalcularImpuestos(),
                 new ConfirmarPedido()
