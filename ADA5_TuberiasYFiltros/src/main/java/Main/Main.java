@@ -19,7 +19,6 @@ public class Main {
             String nombreProducto;
             int cantidad;
             int existencia;
-            float descuento = 0;
             float precio;
             System.out.println("Ingrese el nombre del producto o presione enter si no sea ingresar productos:");
             nombreProducto = scanner.nextLine();
@@ -34,7 +33,7 @@ public class Main {
                 System.out.println("Ingrese la cantidad de unidades disponibles");
                 existencia = scanner.nextInt();
                 scanner.nextLine();
-                Producto producto = new Producto(nombreProducto, cantidad, existencia, descuento, precio);
+                Producto producto = new Producto(nombreProducto, cantidad, existencia, precio);
                 productos.add(producto);
                 System.out.println("Producto creado exitosamente, ingrese 1 si desea crear otro producto, ingrese 0 de lo contrario");
                 int opcion = scanner.nextInt();

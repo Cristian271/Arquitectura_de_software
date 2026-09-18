@@ -4,14 +4,12 @@ public class Producto {
     private String nombre;
      private int cantidad;
      private int existencia;
-     private float descuento;
      private float precio;
 
-     public Producto(String nombre, int cantidad, int existencia, float descuento, float precio){
+     public Producto(String nombre, int cantidad, int existencia, float precio){
          this.nombre = nombre;
          this.cantidad = cantidad;
          this.existencia = existencia;
-         this.descuento = descuento;
          this.precio = precio;
      }
 
@@ -39,13 +37,7 @@ public class Producto {
         this.existencia = existencia;
     }
 
-    public float getDescuento() {
-        return descuento;
-    }
 
-    public void setDescuento(float descuento) {
-        this.descuento = descuento;
-    }
 
     public float getPrecio() { return precio; }
 
