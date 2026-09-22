@@ -1,6 +1,9 @@
 package presentacion;
 
 import modelo.Pedido;
+import modelo.Producto;
+import java.util.Scanner;
+import java.util.ArrayList;
 
 public class PedidoUI {
     public  void menuPresentacion() {
@@ -33,11 +36,14 @@ public class PedidoUI {
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
 
-    public void menuConsultarPedidoPorId() {
+    public int consultarPedidoPorId(Scanner scanner) {
         System.out.println("╔════════════════════════════════════════════════════╗");
         System.out.println("║             CONSULTAR PEDIDO POR ID                ║");
         System.out.println("╚════════════════════════════════════════════════════╝");
         System.out.print("Ingrese el ID del pedido a consultar: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        return id;
     }
 
     public void menuListarPedidos() {
@@ -59,27 +65,94 @@ public class PedidoUI {
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
 
+
+    public void imprimirPedidoNoEncontrado() {
+        System.out.println("╔════════════════════════════════════════════════════╗");
+        System.out.println("║                [!] PEDIDO NO ENCONTRADO            ║");
+        System.out.println("║   No se encontró ningún pedido con ese ID          ║");
+        System.out.println("╚════════════════════════════════════════════════════╝");
+    }
     public void imprimirPedido(Pedido pedido) {
         System.out.println("╔════════════════════════════════════════════════════╗");
         System.out.println("║                 DATOS DEL PEDIDO                   ║");
         System.out.println("╠════════════════════════════════════════════════════╣");
-        System.out.printf("║ ID Pedido:   %-37d ║%n", pedido.getId());
-        System.out.printf("║ Cliente:     %-37s ║%n", pedido.getCliente());
-        System.out.printf("║ Subtotal:    $%-36.2f ║%n", pedido.getSubtotal());
-        System.out.printf("║ Descuento:   $%-36.2f ║%n", pedido.getDescuento());
-        System.out.printf("║ Impuestos:   $%-36.2f ║%n", pedido.getImpuestos());
-        System.out.printf("║ Total:       $%-36.2f ║%n", pedido.getTotal());
-        System.out.printf("║ Estado:      %-37s ║%n", pedido.getEstado());
+        System.out.println("║  ID Pedido:   " + pedido.getId());
+        System.out.println("║  Cliente:    " + pedido.getCliente());
+        System.out.println("║  Productos:");
+        if (pedido.getProductos() != null) {
+            for (Producto p : pedido.getProductos()) {
+                System.out.println("║    * " + p.getNombre() + " x" + p.getCantidad() + " ($" + p.getPrecio() + " c/u)");
+            }
+        }
+        System.out.println("║  Subtotal:   " + pedido.getSubtotal());
+        System.out.println("║  Descuento:   $" + pedido.getDescuento());
+        System.out.println("║  Impuestos:   $" + pedido.getImpuestos());
+        System.out.println("║  Total:   $" + pedido.getTotal());
+        System.out.println("║  Estado:   " + pedido.getEstado());
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
 
+    public Pedido capturarDatosPedido(Scanner scanner) {
+        menuRegistrarPedido();
+
+        System.out.print("Nombre del cliente: ");
+        String cliente = scanner.nextLine();
+
+        // Catálogo base de prueba
+        Producto[] catalogo = new Producto[] {
+                new Producto("Laptop", 12000.0f, 0, 5),
+                new Producto("Mouse", 350.0f, 0, 10),
+                new Producto("Teclado", 850.0f, 0, 3)
+        };
+
+        System.out.println("\n╔════════════════════════════════════════════════════╗");
+        System.out.println("║               PRODUCTOS DISPONIBLES                ║");
+        System.out.println("║  1. Laptop ($12000) - Stock: 5                     ║");
+        System.out.println("║  2. Mouse ($350) - Stock: 10                       ║");
+        System.out.println("║  3. Teclado ($850) - Stock: 3                      ║");
+        System.out.println("╚════════════════════════════════════════════════════╝");
+
+        ArrayList<Producto> listaProductos = new ArrayList<>();
+        String respuesta = "s";
+
+        while (respuesta.equalsIgnoreCase("s")) {
+            System.out.print("\nElige el producto (1, 2 o 3): ");
+            int opcion = scanner.nextInt();
+
+            if (opcion >= 1 && opcion <= 3) {
+                Producto base = catalogo[opcion - 1];
+
+                System.out.print("Cantidad: ");
+                int cantidad = scanner.nextInt();
+
+                Producto item = new Producto(
+                        base.getNombre(),
+                        base.getPrecio(),
+                        cantidad,
+                        base.getExistencias()
+                );
+
+                listaProductos.add(item);
+            } else {
+                System.out.println("Opción no válida");
+            }
+
+            System.out.print("¿Deseas agregar otro producto? (s/n): ");
+            respuesta = scanner.next();
+        }
+
+        scanner.nextLine();
+
+        Pedido pedido = new Pedido();
+        pedido.setCliente(cliente);
+        pedido.setProductos(listaProductos);
+
+        return pedido;
+    }
     public void imprimirSinPedidosRegistrados() {
         System.out.println("╔════════════════════════════════════════════════════╗");
         System.out.println("║       NO HAY PEDIDOS REGISTRADOS EN EL SISTEMA     ║");
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
 
-    public void imprimirEnunciado (String oracion){
-        System.out.println(oracion);
-    }
 }

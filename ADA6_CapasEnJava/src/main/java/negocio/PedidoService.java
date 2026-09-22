@@ -11,18 +11,32 @@ import java.util.Scanner;
 
 public class PedidoService {
     private final PedidoRepository repositorio;
-    private final PedidoUI presentacion;
 
     // Constructores
-    public PedidoService(PedidoRepository repositorio, PedidoUI presentacion){
+    public PedidoService(PedidoRepository repositorio) {
         this.repositorio = repositorio;
-        this.presentacion = presentacion;
     }
 
-    // Validar datos (no implementado)
     public boolean validarDatos(Pedido pedido){
-        boolean datosCorrectos = false;
-        return datosCorrectos;
+        // Validando que el cliente exista
+        if (pedido.getCliente() == null || pedido.getCliente().trim().isEmpty()) {
+            return false;
+        }
+        // validar si tiene productos
+        if (pedido.getProductos() == null || pedido.getProductos().isEmpty()) {
+            return false;
+        }
+        for (Producto p : pedido.getProductos()) {
+            // cantidad mayor a cero
+            if (p.getCantidad() <= 0) {
+                return false;
+            }
+            // no se puede solicitar más de lo que hay
+            if (p.getCantidad() > p.getExistencias()) {
+                return false;
+            }
+        }
+        return true;
     }
     public Pedido calcularSubtotal(Pedido pedido){
         float subtotal = 0;
@@ -45,42 +59,35 @@ public class PedidoService {
     public Pedido aplicarImpuestos(Pedido pedido){
         float base = pedido.getSubtotal() - pedido.getDescuento();
         float impuestos = base * 0.16f;
-        float total = base + impuestos;
+        //float total = base + impuestos;
 
         pedido.setImpuestos(impuestos);
-        pedido.setTotal(total);
+        //pedido.setTotal(total);
         return pedido;
+    }
+    public void calcularTotal(Pedido pedido) {
+        float total = pedido.getSubtotal() - pedido.getDescuento() + pedido.getImpuestos();
+        pedido.setTotal(total);
     }
     // Determinar el estado del pedido (no implementado)
     public Pedido determinarEstado(Pedido pedido){
         return pedido;
     }
-    // Coordinar el registro y consulta de pedidos
-    // (no implementado)
-    public Pedido registrarPedido(){
-        // pedir todos los datos del pedido
-        // Todos los prints deben ser con el objeto presentacion
-        Pedido pedido = new Pedido();
-        return pedido;
-    }
-    // (no implementado)
-    public void consultarPedido(int id){
 
+    public Pedido consultarPedido(int id){
+        return repositorio.buscarPorId(id);
     }
+
 
     public Pedido procesarPedido(Pedido pedido) {
         if (!validarDatos(pedido)) {
-            presentacion.imprimirPedidoNOValido();
             return null;
         }
-
         calcularSubtotal(pedido);
         aplicarDescuento(pedido);
         aplicarImpuestos(pedido);
-
-        pedido.setTotal(pedido.getSubtotal() - pedido.getDescuento() + pedido.getImpuestos());
+        calcularTotal(pedido);
         pedido.setEstado("PROCESADO");
-
 
         int idGenerado = repositorio.guardar(pedido);
         pedido.setId(idGenerado);
@@ -88,18 +95,8 @@ public class PedidoService {
         return pedido;
     }
 
-    public void listarPedidos() {
-
-        List<Pedido> listaPedidos = repositorio.listarPedidos();
-
-        if (listaPedidos.isEmpty()) {
-            presentacion.imprimirSinPedidosRegistrados();
-            return;
-        }
-
-        for (Pedido pedido : listaPedidos) {
-            presentacion.imprimirPedido(pedido);
-        }
+    public List<Pedido> listarPedidos() {
+        return repositorio.listarPedidos();
 
     }
 

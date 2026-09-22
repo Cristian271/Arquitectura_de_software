@@ -6,6 +6,13 @@ public class Producto {
     private int cantidad;
     private int existencias;
 
+    public Producto(String nombre, float precio, int cantidad, int existencias) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.cantidad = cantidad;
+        this.existencias = existencias;
+    }
+
     public String getNombre() {
         return nombre;
     }

@@ -12,6 +12,10 @@ public class Pedido {
     private float total;
     private String estado;
 
+    public Pedido() {
+        this.productos = new ArrayList<>();
+    }
+
     public int getId() {
         return id;
     }
