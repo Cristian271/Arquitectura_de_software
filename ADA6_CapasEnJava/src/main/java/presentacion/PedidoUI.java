@@ -79,4 +79,7 @@ public class PedidoUI {
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
 
+    public void imprimirEnunciado (String oracion){
+        System.out.println(oracion);
+    }
 }

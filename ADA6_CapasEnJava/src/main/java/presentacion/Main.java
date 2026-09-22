@@ -26,7 +26,7 @@ public class Main {
                     presentacion.menuRegistrarPedido();
                     System.out.println();
                     Pedido pedido = new Pedido();
-                    //pedido = servicio.registrarPedido();
+                    pedido = servicio.registrarPedido();
 
                     break;
                 case 2: // Consultar pedido por id
