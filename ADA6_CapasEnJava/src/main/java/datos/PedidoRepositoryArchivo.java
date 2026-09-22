@@ -1,24 +1,62 @@
 package datos;
 
 import modelo.Pedido;
-import java.io.*;
-import java.util.*;
+import modelo.Producto;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PedidoRepositoryArchivo implements PedidoRepository {
+    private final String archivoRuta = "pedidos.txt";
+    private int contadorId = 1;
 
-    private final String ARCHIVO = "pedidos.txt";
+    public PedidoRepositoryArchivo() {
+        List <Pedido> guardados = listarPedidos();
+        for (Pedido p : guardados) {
+            if (p.getId() >= contadorId) {
+                contadorId = p.getId() + 1;
+            }
+        }
+    }
 
     @Override
     public int guardar(Pedido pedido) {
+        pedido.setId(contadorId);
+        contadorId++;
 
-        List<Pedido> existentes = listarPedidos();
-        int nuevoId = existentes.size() + 1;
-        pedido.setId(nuevoId);
+        try (PrintWriter escritor = new PrintWriter(new FileWriter(archivoRuta, true))) {
+            StringBuilder linea = new StringBuilder();
+            linea.append(pedido.getId()).append("|")
+                    .append(pedido.getCliente()).append("|")
+                    .append(pedido.getSubtotal()).append("|")
+                    .append(pedido.getDescuento()).append("|")
+                    .append(pedido.getImpuestos()).append("|")
+                    .append(pedido.getTotal()).append("|")
+                    .append(pedido.getEstado()).append("|");
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter(ARCHIVO, true))) {
-            writer.println(pedido.getId() + "|" + pedido.toString());
+            if (pedido.getProductos() != null && !pedido.getProductos().isEmpty()) {
+                for (int i = 0; i < pedido.getProductos().size(); i++) {
+                    Producto p = pedido.getProductos().get(i);
+                    linea.append(p.getNombre()).append(",")
+                            .append(p.getPrecio()).append(",")
+                            .append(p.getCantidad()).append(",")
+                            .append(p.getExistencias());
+
+                    if (i < pedido.getProductos().size() - 1) {
+                        linea.append(";");
+                    }
+                }
+            }
+
+            escritor.println(linea.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al guardar en el archivo: " + e.getMessage());
         }
 
         return pedido.getId();
@@ -26,33 +64,60 @@ public class PedidoRepositoryArchivo implements PedidoRepository {
 
     @Override
     public Pedido buscarPorId(int id) {
-        for (Pedido p : listarPedidos()) {
-            if (p.getId() == id) return p;
+        List<Pedido> pedidos = listarPedidos();
+        for (Pedido p : pedidos) {
+            if (p.getId() == id) {
+                return p;
+            }
         }
         return null;
     }
 
     @Override
     public List<Pedido> listarPedidos() {
-        List<Pedido> lista = new ArrayList<>();
-        File file = new File(ARCHIVO);
+        List <Pedido> lista= new ArrayList<>();
+        File archivo = new File(archivoRuta);
 
-        if (!file.exists()) return lista;
+        if (!archivo.exists()) {
+            return lista;
+        }
 
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                String linea = scanner.nextLine();
-                if (!linea.trim().isEmpty()) {
-                    String[] datos = linea.split("\\|", 2);
-                    int id = Integer.parseInt(datos[0]);
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                if (linea.trim().isEmpty()) continue;
 
+                String[] datos = linea.split("\\|", -1);
+                if (datos.length >= 7) {
                     Pedido pedido = new Pedido();
-                    pedido.setId(id);
+                    pedido.setId(Integer.parseInt(datos[0]));
+                    pedido.setCliente(datos[1]);
+                    pedido.setSubtotal(Float.parseFloat(datos[2]));
+                    pedido.setDescuento(Float.parseFloat(datos[3]));
+                    pedido.setImpuestos(Float.parseFloat(datos[4]));
+                    pedido.setTotal(Float.parseFloat(datos[5]));
+                    pedido.setEstado(datos[6]);
+
+                    if (datos.length > 7 && !datos[7].isEmpty()) {
+                        String[] itemsTexto = datos[7].split(";");
+                        for (String itemStr : itemsTexto) {
+                            String[] valores = itemStr.split(",");
+                            if (valores.length == 4) {
+                                String nom = valores[0];
+                                float prec = Float.parseFloat(valores[1]);
+                                int cant = Integer.parseInt(valores[2]);
+                                int exist = Integer.parseInt(valores[3]);
+
+                                pedido.getProductos().add(new Producto(nom, prec, cant, exist));
+                            }
+                        }
+                    }
+
                     lista.add(pedido);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al leer el archivo: " + e.getMessage());
         }
 
         return lista;
