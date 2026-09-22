@@ -12,26 +12,21 @@ import java.util.Scanner;
 public class PedidoService {
     private final PedidoRepository repositorio;
 
-    // Constructores
     public PedidoService(PedidoRepository repositorio) {
         this.repositorio = repositorio;
     }
 
     public boolean validarDatos(Pedido pedido){
-        // Validando que el cliente exista
         if (pedido.getCliente() == null || pedido.getCliente().trim().isEmpty()) {
             return false;
         }
-        // validar si tiene productos
         if (pedido.getProductos() == null || pedido.getProductos().isEmpty()) {
             return false;
         }
         for (Producto p : pedido.getProductos()) {
-            // cantidad mayor a cero
             if (p.getCantidad() <= 0) {
                 return false;
             }
-            // no se puede solicitar más de lo que hay
             if (p.getCantidad() > p.getExistencias()) {
                 return false;
             }
@@ -59,21 +54,14 @@ public class PedidoService {
     public Pedido aplicarImpuestos(Pedido pedido){
         float base = pedido.getSubtotal() - pedido.getDescuento();
         float impuestos = base * 0.16f;
-        //float total = base + impuestos;
 
         pedido.setImpuestos(impuestos);
-        //pedido.setTotal(total);
         return pedido;
     }
     public void calcularTotal(Pedido pedido) {
         float total = pedido.getSubtotal() - pedido.getDescuento() + pedido.getImpuestos();
         pedido.setTotal(total);
     }
-    // Determinar el estado del pedido (no implementado)
-    public Pedido determinarEstado(Pedido pedido){
-        return pedido;
-    }
-
     public Pedido consultarPedido(int id){
         return repositorio.buscarPorId(id);
     }

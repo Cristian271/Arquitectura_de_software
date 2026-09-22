@@ -8,9 +8,6 @@ import java.util.Map;
 
 public class PedidoRepositoryMemoria implements PedidoRepository {
 
-
-    /* Este map simula la base de datos, esta clase es la encargada del acceso de datos y de los datos como tal,
-       sugerencia del maestro <-- Borrar este comentario luego*/
     private final Map<Integer, Pedido> almacenamiento = new HashMap<>();
 
     private int contadorId = 1;

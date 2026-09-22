@@ -1,5 +1,6 @@
 package presentacion;
 import datos.PedidoRepository;
+import datos.PedidoRepositoryArchivo;
 import datos.PedidoRepositoryMemoria;
 import modelo.Pedido;
 import negocio.PedidoService;
@@ -30,6 +31,7 @@ public class Main {
                     Pedido registrado = servicio.procesarPedido(nuevoPedido);
                     if (registrado != null) {
                         presentacion.imprimirPedido(registrado);
+                        presentacion.actualizarStock(registrado);
                     } else {
                         presentacion.imprimirPedidoNOValido();
                     }
