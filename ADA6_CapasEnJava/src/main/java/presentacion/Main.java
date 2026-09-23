@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         PedidoRepository repositorio = new PedidoRepositoryMemoria();
+        //PedidoRepository repositorio = new PedidoRepositoryArchivo();
         PedidoService servicio = new PedidoService(repositorio); // Aqui la capa de servicio ya tiene acceso a los datos
         PedidoUI presentacion = new PedidoUI();
         Scanner scanner = new Scanner(System.in);
