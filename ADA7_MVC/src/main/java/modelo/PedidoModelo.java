@@ -66,6 +66,7 @@ public class PedidoModelo {
 
         pedidos.put(pedido.getId(), pedido);
         notifyObservers();
+
         siguienteId++;
 
         return pedido;
@@ -73,6 +74,9 @@ public class PedidoModelo {
 
     public Pedido consultarPedido(int id){
         return pedidos.get(id);
+    }
+    public Map <Integer, Pedido>getPedidos() {
+        return pedidos;
     }
 
     /*

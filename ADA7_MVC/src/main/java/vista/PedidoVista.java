@@ -2,8 +2,13 @@ package vista;
 
 import modelo.Observer;
 import modelo.Pedido;
+import modelo.Producto;
+
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class PedidoVista implements Observer {
+    private Scanner scanner = new Scanner(System.in);
     public  void menuPresentacion() {
         System.out.println("╔════════════════════════════════════════════════════╗");
         System.out.println("║         SISTEMA DE VENTA DE PRODUCTOS              ║");
@@ -66,7 +71,7 @@ public class PedidoVista implements Observer {
         System.out.println("║       NO HAY PEDIDOS REGISTRADOS EN EL SISTEMA     ║");
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
-
+// usar para imprimir  la lista de pedidos
     public void imprimirPedido(Pedido pedido) {
         System.out.println("╔════════════════════════════════════════════════════╗");
         System.out.println("║                 DATOS DEL PEDIDO                   ║");
@@ -79,6 +84,73 @@ public class PedidoVista implements Observer {
         System.out.printf("║ Total:       $%-36.2f ║%n", pedido.getTotal());
         System.out.printf("║ Estado:      %-37s ║%n", pedido.getEstado());
         System.out.println("╚════════════════════════════════════════════════════╝");
+    }
+
+    public Pedido capturarPedido() {
+        menuRegistrarPedido();
+        Pedido pedido = new Pedido();
+        System.out.print("Nombre del cliente: ");
+        pedido.setCliente(scanner.nextLine());
+
+        ArrayList <Producto> lista = new ArrayList<>();
+        String continuar = "s";
+
+        while (continuar.equalsIgnoreCase("s")) {
+            Producto producto = new Producto();
+            System.out.print("Nombre del producto: ");
+            producto.setNombre(scanner.nextLine());
+
+            System.out.print("Precio: ");
+            producto.setPrecio(Float.parseFloat(scanner.nextLine()));
+
+            System.out.print("Cantidad: ");
+            producto.setCantidad(Integer.parseInt(scanner.nextLine()));
+
+            System.out.print("Existencia: ");
+            producto.setExistencia(Integer.parseInt(scanner.nextLine()));
+
+            lista.add(producto);
+
+            System.out.print("¿Agregar otro producto? (s/n): ");
+            continuar = scanner.nextLine();
+        }
+
+        pedido.setProductos(lista);
+        return pedido;
+    }
+    // imprimir pedidos registrados correctamente
+    public void mostrarResultado(Pedido pedido) {
+        System.out.println("\n------ PEDIDO REGISTRADO Y CONFIRMADO ------");
+        imprimirPedido(pedido);
+    }
+    //imprimir para cuando se busca por id
+    public void mostrarPedido(Pedido pedido) {
+        System.out.println("\n------ DETALLE DEL PEDIDO CONSULTADO ------");
+        imprimirPedido(pedido);
+    }
+
+    public void mostrarError(String mensaje) {
+        imprimirPedidoNOValido();
+        System.out.println("Detalle del error: " + mensaje + "\n");
+    }
+
+    // pedir  opciones y que sea un num válido
+    // para pedir la opcion en el menu principal
+    public int pedirOpcionMenu() {
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+// para pedir el id
+    public int pedirIdConsulta() {
+        menuConsultarPedidoPorId();
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     // no se si implementarle algo mas aun
