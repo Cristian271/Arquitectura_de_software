@@ -1,8 +1,9 @@
 package vista;
 
+import modelo.Observer;
 import modelo.Pedido;
 
-public class PedidoVista {
+public class PedidoVista implements Observer {
     public  void menuPresentacion() {
         System.out.println("╔════════════════════════════════════════════════════╗");
         System.out.println("║         SISTEMA DE VENTA DE PRODUCTOS              ║");
@@ -78,5 +79,12 @@ public class PedidoVista {
         System.out.printf("║ Total:       $%-36.2f ║%n", pedido.getTotal());
         System.out.printf("║ Estado:      %-37s ║%n", pedido.getEstado());
         System.out.println("╚════════════════════════════════════════════════════╝");
+    }
+
+    // no se si implementarle algo mas aun
+    @Override
+    public void update() {
+        System.out.println("Notificacion recibida del modelo");
+
     }
 }
