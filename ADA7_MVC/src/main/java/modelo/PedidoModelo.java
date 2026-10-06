@@ -78,21 +78,4 @@ public class PedidoModelo {
     public Map <Integer, Pedido>getPedidos() {
         return pedidos;
     }
-
-    /*
-    El Modelo deberá contener:
-
-    información de pedidos;
-    reglas de validación;
-    cálculo de subtotal;
-    cálculo de descuento;
-    cálculo de impuestos;
-    cálculo del total;
-    registro y consulta de pedidos.
-    El Modelo no deberá imprimir información ni solicitar datos al usuario.
-     */
-
-
-
-
 }

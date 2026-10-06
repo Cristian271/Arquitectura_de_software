@@ -64,14 +64,19 @@ public class PedidoVista implements Observer {
         System.out.println("║   Revise los datos del pedido e intente de nuevo   ║");
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
-
+    public void imprimirOpcionNOValida() {
+        System.out.println("╔════════════════════════════════════════════════════╗");
+        System.out.println("║                [!] OPCIÓN NO VÁLIDA                ║");
+        System.out.println("║        Revise los datos e intente de nuevo         ║");
+        System.out.println("╚════════════════════════════════════════════════════╝");
+    }
 
     public void imprimirSinPedidosRegistrados() {
         System.out.println("╔════════════════════════════════════════════════════╗");
         System.out.println("║       NO HAY PEDIDOS REGISTRADOS EN EL SISTEMA     ║");
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
-// usar para imprimir  la lista de pedidos
+
     public void imprimirPedido(Pedido pedido) {
         System.out.println("╔════════════════════════════════════════════════════╗");
         System.out.println("║                 DATOS DEL PEDIDO                   ║");
@@ -118,12 +123,12 @@ public class PedidoVista implements Observer {
         pedido.setProductos(lista);
         return pedido;
     }
-    // imprimir pedidos registrados correctamente
+
     public void mostrarResultado(Pedido pedido) {
         System.out.println("\n------ PEDIDO REGISTRADO Y CONFIRMADO ------");
         imprimirPedido(pedido);
     }
-    //imprimir para cuando se busca por id
+
     public void mostrarPedido(Pedido pedido) {
         System.out.println("\n------ DETALLE DEL PEDIDO CONSULTADO ------");
         imprimirPedido(pedido);
@@ -134,8 +139,6 @@ public class PedidoVista implements Observer {
         System.out.println("Detalle del error: " + mensaje + "\n");
     }
 
-    // pedir  opciones y que sea un num válido
-    // para pedir la opcion en el menu principal
     public int pedirOpcionMenu() {
         try {
             return Integer.parseInt(scanner.nextLine());
@@ -143,7 +146,7 @@ public class PedidoVista implements Observer {
             return -1;
         }
     }
-// para pedir el id
+
     public int pedirIdConsulta() {
         menuConsultarPedidoPorId();
         try {
@@ -153,7 +156,6 @@ public class PedidoVista implements Observer {
         }
     }
 
-    // no se si implementarle algo mas aun
     @Override
     public void update() {
         System.out.println("Notificacion recibida del modelo");
