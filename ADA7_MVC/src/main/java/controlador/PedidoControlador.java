@@ -2,7 +2,6 @@ package controlador;
 
 import modelo.Pedido;
 import modelo.PedidoModelo;
-import modelo.Producto;
 import vista.PedidoVista;
 import java.util.Map;
 
@@ -15,9 +14,6 @@ public class PedidoControlador {
         this.vista = vista;
     }
 
-    public void setVista(PedidoVista nuevaVista) {
-        this.vista = nuevaVista;
-    }
 
     public void registrarPedido() {
         try {
@@ -32,7 +28,7 @@ public class PedidoControlador {
     public void consultarPedido() {
         int id = vista.pedirIdConsulta();
         if (id == -1) {
-            vista.mostrarError("El ID ingresado no es válido.");
+            vista.mostrarError("El ID ingresado no es válido. \n");
             return;
         }
         Pedido pedido = modelo.consultarPedido(id);
