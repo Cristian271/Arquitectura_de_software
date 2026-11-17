@@ -1,11 +1,302 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
- </head>
- <body>
-    <h1>Ejemplo</h1>
- </body>
- </html>
+    <title>Gestión de Empleados</title>
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+</head>
+<body>
+
+<div class="container">
+    <!-- Barra superior de sesión -->
+    <div class="session-bar">
+        <span>Sesión iniciada como: <span class="session-user" th:text="${usuarioActual}">root</span></span>
+        <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
+    </div>
+
+    <!-- Alertas de éxito o error -->
+    <div th:if="${exito}" class="alert alert-success">
+        <span th:text="${exito}"></span>
+        <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+    <div th:if="${error}" class="alert alert-error">
+        <span th:text="${error}"></span>
+        <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+
+    <!-- Tabla principal -->
+    <div class="table-wrapper">
+        <div class="table-title">
+            <h2>Gestión de <b>Empleados</b></h2>
+            <div class="title-actions">
+                <button type="button" class="btn btn-danger" onclick="abrirModalEliminarSeleccionados()">
+                    <!-- Icono círculo menos -->
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/>
+                    </svg>
+                    <span>Eliminar</span>
+                </button>
+                <button type="button" class="btn btn-success" onclick="abrirModal('modalAgregar')">
+                    <!-- Icono círculo más -->
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                    </svg>
+                    <span>Añadir Empleado</span>
+                </button>
+            </div>
+        </div>
+
+        <form id="formSeleccionados" th:action="@{/Menu/eliminar-seleccionados}" method="post">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="col-check">
+                                <input type="checkbox" id="selectAll" class="custom-checkbox" title="Seleccionar todos">
+                            </th>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="emp : ${empleados}">
+                            <td class="col-check">
+                                <input type="checkbox" name="ids" th:value="${emp.id}" class="custom-checkbox row-checkbox">
+                            </td>
+                            <td th:text="${emp.nombre}">Carlos Mendoza</td>
+                            <td th:text="${emp.correo}">carlos.mendoza@mail.com</td>
+                            <td th:text="${emp.direccion}">Av. Reforma 234</td>
+                            <td th:text="${emp.telefono}">(555) 123-4567</td>
+                            <td>
+                                <div class="actions-cell">
+                                    <!-- Botón Modificar (Lápiz amarillo) -->
+                                    <button type="button" class="action-btn action-edit"
+                                            title="Modificar"
+                                            th:data-id="${emp.id}"
+                                            th:data-nombre="${emp.nombre}"
+                                            th:data-correo="${emp.correo}"
+                                            th:data-direccion="${emp.direccion}"
+                                            th:data-telefono="${emp.telefono}"
+                                            onclick="abrirModalEditar(this)">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
+                                        </svg>
+                                    </button>
+                                    <!-- Botón Eliminar Individual (Bote de basura rojo) -->
+                                    <button type="button" class="action-btn action-delete"
+                                            title="Eliminar"
+                                            th:data-id="${emp.id}"
+                                            th:data-nombre="${emp.nombre}"
+                                            onclick="abrirModalEliminarUno(this)">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(empleados)}">
+                            <td colspan="6" class="empty-state">
+                                No hay empleados registrados en la base de datos. Haz clic en <b>Añadir Empleado</b> para agregar uno.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <div class="table-footer">
+            <span>Total de registros: <b th:text="${#lists.size(empleados)}">0</b></span>
+            <span id="contadorSeleccionados">0 seleccionados</span>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Añadir Empleado -->
+<div id="modalAgregar" class="modal-backdrop">
+    <div class="modal-dialog">
+        <form th:action="@{/Menu/guardar}" method="post">
+            <div class="modal-header">
+                <h3>Añadir Empleado</h3>
+                <button type="button" class="modal-close" onclick="cerrarModal('modalAgregar')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="addNombre">Nombre</label>
+                    <input type="text" id="addNombre" name="nombre" class="form-control" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="addCorreo">Correo</label>
+                    <input type="email" id="addCorreo" name="correo" class="form-control" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="addDireccion">Dirección</label>
+                    <textarea id="addDireccion" name="direccion" class="form-control" rows="2" maxlength="255" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="addTelefono">Teléfono</label>
+                    <input type="text" id="addTelefono" name="telefono" class="form-control" maxlength="25" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalAgregar')">Cancelar</button>
+                <button type="submit" class="btn btn-success">Añadir</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Modificar Empleado -->
+<div id="modalEditar" class="modal-backdrop">
+    <div class="modal-dialog">
+        <form th:action="@{/Menu/actualizar}" method="post">
+            <input type="hidden" id="editId" name="id">
+            <div class="modal-header">
+                <h3>Modificar Empleado</h3>
+                <button type="button" class="modal-close" onclick="cerrarModal('modalEditar')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editNombre">Nombre</label>
+                    <input type="text" id="editNombre" name="nombre" class="form-control" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCorreo">Correo</label>
+                    <input type="email" id="editCorreo" name="correo" class="form-control" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDireccion">Dirección</label>
+                    <textarea id="editDireccion" name="direccion" class="form-control" rows="2" maxlength="255" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editTelefono">Teléfono</label>
+                    <input type="text" id="editTelefono" name="telefono" class="form-control" maxlength="25" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalEditar')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Eliminar Un Empleado -->
+<div id="modalEliminarUno" class="modal-backdrop">
+    <div class="modal-dialog">
+        <form id="formEliminarUno" method="post">
+            <div class="modal-header">
+                <h3>Eliminar Empleado</h3>
+                <button type="button" class="modal-close" onclick="cerrarModal('modalEliminarUno')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar a <b id="nombreEmpleadoEliminar"></b>?</p>
+                <p class="warning-text">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalEliminarUno')">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Eliminar Seleccionados / Todos -->
+<div id="modalEliminarSeleccionados" class="modal-backdrop">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3>Eliminar Empleados Seleccionados</h3>
+            <button type="button" class="modal-close" onclick="cerrarModal('modalEliminarSeleccionados')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="mensajeEliminarSeleccionados">¿Estás seguro de que deseas eliminar los registros seleccionados?</p>
+            <p class="warning-text">Esta acción eliminará los empleados marcados de la base de datos.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalEliminarSeleccionados')">Cancelar</button>
+            <button type="button" class="btn btn-danger" onclick="confirmarEliminarSeleccionados()">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const contadorSeleccionados = document.getElementById('contadorSeleccionados');
+
+    function actualizarContador() {
+        const seleccionados = document.querySelectorAll('.row-checkbox:checked').length;
+        contadorSeleccionados.textContent = seleccionados + ' seleccionado(s)';
+        if (rowCheckboxes.length > 0) {
+            selectAllCheckbox.checked = (seleccionados === rowCheckboxes.length);
+            selectAllCheckbox.indeterminate = (seleccionados > 0 && seleccionados < rowCheckboxes.length);
+        }
+    }
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function () {
+            rowCheckboxes.forEach(cb => {
+                cb.checked = selectAllCheckbox.checked;
+            });
+            actualizarContador();
+        });
+    }
+
+    rowCheckboxes.forEach(cb => {
+        cb.addEventListener('change', actualizarContador);
+    });
+
+    function abrirModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function cerrarModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function abrirModalEditar(btn) {
+        document.getElementById('editId').value = btn.getAttribute('data-id');
+        document.getElementById('editNombre').value = btn.getAttribute('data-nombre');
+        document.getElementById('editCorreo').value = btn.getAttribute('data-correo');
+        document.getElementById('editDireccion').value = btn.getAttribute('data-direccion');
+        document.getElementById('editTelefono').value = btn.getAttribute('data-telefono');
+        abrirModal('modalEditar');
+    }
+
+    function abrirModalEliminarUno(btn) {
+        const id = btn.getAttribute('data-id');
+        const nombre = btn.getAttribute('data-nombre');
+        document.getElementById('nombreEmpleadoEliminar').textContent = nombre;
+        document.getElementById('formEliminarUno').action = '/Menu/eliminar/' + id;
+        abrirModal('modalEliminarUno');
+    }
+
+    function abrirModalEliminarSeleccionados() {
+        const seleccionados = document.querySelectorAll('.row-checkbox:checked').length;
+        if (seleccionados === 0) {
+            alert('Por favor, selecciona al menos un empleado marcando su casilla (o la casilla superior para seleccionar todos).');
+            return;
+        }
+        document.getElementById('mensajeEliminarSeleccionados').textContent =
+            '¿Estás seguro de que deseas eliminar los ' + seleccionados + ' empleado(s) seleccionado(s)?';
+        abrirModal('modalEliminarSeleccionados');
+    }
+
+    function confirmarEliminarSeleccionados() {
+        document.getElementById('formSeleccionados').submit();
+    }
+
+    // Cerrar modal al hacer clic fuera del cuadro
+    window.addEventListener('click', function (e) {
+        if (e.target.classList.contains('modal-backdrop')) {
+            e.target.classList.remove('active');
+        }
+    });
+</script>
+
+</body>
+</html>

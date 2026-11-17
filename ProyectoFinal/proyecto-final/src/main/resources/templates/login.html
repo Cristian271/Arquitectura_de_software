@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Sistema de Empleados</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="auth-header">
+        <h1>Sistema Gestor de Empleados</h1>
+        <p>Inicia sesión o crea una cuenta para continuar</p>
+    </div>
+
+    <div class="tabs">
+        <button type="button" id="tabLoginBtn" class="tab-btn"
+                th:classappend="${!modoRegistro} ? 'active' : ''"
+                onclick="mostrarFormulario('login')">
+            Iniciar Sesión
+        </button>
+        <button type="button" id="tabRegistroBtn" class="tab-btn"
+                th:classappend="${modoRegistro} ? 'active' : ''"
+                onclick="mostrarFormulario('registro')">
+            Crear Cuenta
+        </button>
+    </div>
+
+    <div class="auth-body">
+        <!-- Mensajes de retroalimentación -->
+        <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        <div th:if="${errorRegistro}" class="alert alert-error" th:text="${errorRegistro}"></div>
+
+        <!-- Formulario de Inicio de Sesión -->
+        <form id="formLogin" th:action="@{/login}" method="post"
+              th:classappend="${modoRegistro} ? 'hidden' : ''">
+            <div class="form-group">
+                <label for="loginUsuario">Usuario</label>
+                <input type="text" id="loginUsuario" name="usuario" placeholder="Ingresa tu usuario" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="loginContrasena">Contraseña</label>
+                <input type="password" id="loginContrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
+            </div>
+            <button type="submit" class="btn-submit btn-login">Ingresar</button>
+        </form>
+
+        <!-- Formulario de Crear Cuenta -->
+        <form id="formRegistro" th:action="@{/registro}" method="post"
+              th:classappend="${!modoRegistro} ? 'hidden' : ''">
+            <div class="form-group">
+                <label for="regUsuario">Nuevo Usuario</label>
+                <input type="text" id="regUsuario" name="usuario" maxlength="50" placeholder="Elige un nombre de usuario" required>
+            </div>
+            <div class="form-group">
+                <label for="regContrasena">Contraseña</label>
+                <input type="password" id="regContrasena" name="contrasena" maxlength="255" placeholder="Crea una contraseña" required>
+            </div>
+            <button type="submit" class="btn-submit btn-register">Registrar Cuenta</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function mostrarFormulario(modo) {
+        const formLogin = document.getElementById('formLogin');
+        const formRegistro = document.getElementById('formRegistro');
+        const tabLoginBtn = document.getElementById('tabLoginBtn');
+        const tabRegistroBtn = document.getElementById('tabRegistroBtn');
+
+        if (modo === 'registro') {
+            formLogin.classList.add('hidden');
+            formRegistro.classList.remove('hidden');
+            tabLoginBtn.classList.remove('active');
+            tabRegistroBtn.classList.add('active');
+            document.getElementById('regUsuario').focus();
+        } else {
+            formRegistro.classList.add('hidden');
+            formLogin.classList.remove('hidden');
+            tabRegistroBtn.classList.remove('active');
+            tabLoginBtn.classList.add('active');
+            document.getElementById('loginUsuario').focus();
+        }
+    }
+</script>
+
+</body>
+</html>

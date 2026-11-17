@@ -1,0 +1,24 @@
+CREATE DATABASE IF NOT EXISTS crud 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+USE crud;
+CREATE TABLE IF NOT EXISTS Empleados (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Correo VARCHAR(100) NOT NULL UNIQUE,
+    Direccion VARCHAR(255) NOT NULL,
+    Telefono VARCHAR(25) NOT NULL
+);
+USE crud;
+INSERT INTO Empleados (Nombre, Correo, Direccion, Telefono) VALUES
+('Carlos Mendoza', 'carlos.mendoza@mail.com', 'Av. Reforma 234, Ciudad de México, México', '(555) 123-4567'),
+('Laura Gómez', 'laura.gomez@mail.com', 'Calle 60 #450, Mérida, Yucatán', '(999) 234-5678'),
+('Andrés Herrera', 'andres.herrera@mail.com', 'Av. Vallarta 1020, Guadalajara, Jalisco', '(333) 345-6789'),
+('Sofía Ramírez', 'sofia.ramirez@mail.com', 'Calzada del Valle 310, Monterrey, Nuevo León', '(818) 456-7890'),
+('Miguel Ángel Torres', 'miguel.torres@mail.com', 'Blvd. Kukulcán Km 12, Cancún, Quintana Roo', '(998) 567-8901'),
+('Valeria Castro', 'valeria.castro@mail.com', 'Av. Juárez 89, Puebla, Puebla', '(222) 678-9012'),
+('Javier Morales', 'javier.morales@mail.com', 'Calle Independencia 512, Oaxaca, Oaxaca', '(951) 789-0123'),
+('Camila Ortiz', 'camila.ortiz@mail.com', 'Av. Tecnológico 1400, Querétaro, Querétaro', '(442) 890-1234'),
+('Fernando Vargas', 'fernando.vargas@mail.com', 'Paseo Montejo 480, Mérida, Yucatán', '(999) 901-2345'),
+('Elena Navarro', 'elena.navarro@mail.com', 'Av. Revolución 765, Tijuana, Baja California', '(664) 012-3456');
+COMMIT;
